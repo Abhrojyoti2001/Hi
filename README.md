@@ -1,2 +1,2 @@
 # Hi
-Dating application
+Dating application made using python and MySQL
