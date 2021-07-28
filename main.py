@@ -436,7 +436,7 @@ class Hi:
         def callback(*args):
             text = approval.get()
             if text != "Approval":
-                if messagebox.askyesno("Massage", "Are you want to " + str(text) + " this proposal?") == True:
+                if messagebox.askyesno("Massage", "Are you want to " + str(text) + " this proposal?") is True:
                     self.approvals(data[0], text)
 
         # load dp
