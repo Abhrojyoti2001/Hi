@@ -54,7 +54,7 @@ class DbHelper:
         return data
 
     def add_proposal(self, romeo_id, juliet_id):
-        # check wheather this romeo has already proposed this juliet
+        # check whether this romeo has already proposed this juliet
         self.mycursor.execute("SELECT * FROM proposals WHERE romeo_id = {} AND juliet_id = {}".format(romeo_id, juliet_id))
         data = self.mycursor.fetchall()
         if len(data) > 0:
@@ -68,37 +68,37 @@ class DbHelper:
             else:
                 return 1
 
-    def approvals(self, id, btn):
+    def approvals(self, user_id, btn):
         if btn == 'Accept':
-            self.mycursor.execute("UPDATE proposals SET approval = 'yes' WHERE proposal_id = {}".format(id))
+            self.mycursor.execute("UPDATE proposals SET approval = 'yes' WHERE proposal_id = {}".format(user_id))
             t = 2
         elif btn == 'Postpone':
-            self.mycursor.execute("UPDATE proposals SET approval = 'not now' WHERE proposal_id = {}".format(id))
+            self.mycursor.execute("UPDATE proposals SET approval = 'not now' WHERE proposal_id = {}".format(user_id))
             t = 1
         else:
-            self.mycursor.execute("DELETE FROM proposals WHERE proposal_id = {}".format(id))
+            self.mycursor.execute("DELETE FROM proposals WHERE proposal_id = {}".format(user_id))
             t = 0
         self.conn.commit()
         return t
 
-    def fetch_one_data(self, data_type, id, row_no, counter=None):
+    def fetch_one_data(self, data_type, user_id, row_no, counter=None):
         if data_type == 'proposal':
-            self.mycursor.execute("SELECT * FROM proposals JOIN users ON proposals.juliet_id = id WHERE proposals.romeo_id = {} LIMIT {},1".format(id, row_no))
+            self.mycursor.execute("SELECT * FROM proposals JOIN users ON proposals.juliet_id = id WHERE proposals.romeo_id = {} LIMIT {},1".format(user_id, row_no))
             data = self.mycursor.fetchall()
         elif data_type == 'request':
-            self.mycursor.execute("SELECT * FROM proposals JOIN users ON proposals.romeo_id = id WHERE proposals.juliet_id = {} AND proposals.approval IS NULL LIMIT {},1".format(id, row_no))
+            self.mycursor.execute("SELECT * FROM proposals JOIN users ON proposals.romeo_id = id WHERE proposals.juliet_id = {} AND proposals.approval IS NULL LIMIT {},1".format(user_id, row_no))
             data = self.mycursor.fetchall()
         else:
-            self.mycursor.execute("SELECT * FROM proposals JOIN users ON proposals.juliet_id = id WHERE proposals.romeo_id = {} AND approval = 'yes' LIMIT {},1".format(id, row_no))
+            self.mycursor.execute("SELECT * FROM proposals JOIN users ON proposals.juliet_id = id WHERE proposals.romeo_id = {} AND approval = 'yes' LIMIT {},1".format(user_id, row_no))
             data = self.mycursor.fetchall()
             if len(data) == 0:
-                self.mycursor.execute("SELECT * FROM proposals JOIN users ON proposals.romeo_id = id WHERE proposals.juliet_id = {} AND approval = 'yes' LIMIT {},1".format(id, counter))
+                self.mycursor.execute("SELECT * FROM proposals JOIN users ON proposals.romeo_id = id WHERE proposals.juliet_id = {} AND approval = 'yes' LIMIT {},1".format(user_id, counter))
                 data = self.mycursor.fetchall()
         return data
 
     def edit_user_profile(self, user_id, age=None, gender=None, city=None, about=None, password=None):
         try:
-            if password == None:
+            if password is None:
                 self.mycursor.execute("UPDATE users SET age='{}',gender='{}', city='{}',bio='{}' WHERE id='{}'".format(age, gender, city, about, user_id))
             else:
                 self.mycursor.execute("UPDATE users SET password='{}' WHERE id='{}'".format(password, user_id))
